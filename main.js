@@ -1,47 +1,88 @@
-const itemForm = document.getElementById("item-form");
-const itemInput = document.getElementById("item-input");
-const itemList = document.getElementById("item-list");
-const cliearBtn = document.getElementById("clear-btn");
+// Selector !
+let itemForm = document.getElementById("item-form");
+let inputItem = document.getElementById("input-item");
+let itemList = document.getElementById("item-list");
+let addList = document.getElementById("add-list");
+let clearBtn = document.getElementById("clear-btn");
+let listAddRemove = document.getElementById("list-add-remove");
+let searchForm = document.getElementById("search-form");
 
-function addItem(e) {
+// Add Item !
+function add(e) {
+  // To Stop Browser Reload!!
   e.preventDefault();
-  const newItem = itemInput.value;
-  if (newItem === "") {
-    alert("Please Add An Item !");
+  const addItem = inputItem.value;
+  if (addItem === "") {
+    alert("Please Add An Item !!");
+    // emty item remove;
     return;
   }
-  itemList.innerHTML += `
+
+  addList.innerHTML += `
+  <tr class = "item">
     <th scope="row">1</th>
-    <td>${newItem}</td>
-    <td><button class="btn btn-danger item-remove"><i class="bi bi-trash3"></i></button></td>
-  </tr>
+    <td class ="item-name">${addItem}</td>
+    <td>
+    <button class="btn btn-danger mx-2
+    remove-item">
+    <i class="bi bi-trash"></i>
+    </button>
+    </td>
+</tr>
   `;
-  itemInput.value = "";
-  checkInterFace();
+
+  inputItem.value = "";
+
+  checkInterface();
 }
 
+// Search Form !
+function search(e) {
+  let items = document.querySelectorAll(".item");
+  let searchText = e.target.value.toLowerCase();
+  items.forEach((item) => {
+    // console.log(item.children[1].innerHTML.toLowerCase());
+    let itemName = item.children[1].innerHTML.toLowerCase();
+    if (itemName.indexOf(searchText) !== -1) {
+      item.style.display = "";
+    } else {
+      item.style.display = "none";
+    }
+  });
+}
+
+// Remove Item !
 function removeItem(e) {
-  if (e.target.parentElement.classList.contains("item-remove")) {
+  e.preventDefault();
+  // console chack
+  //   console.log(e.target.parentElement.classList.contains("remove-item"));
+
+  // Real !
+  if (e.target.parentElement.classList.contains("remove-item")) {
     e.target.parentElement.parentElement.parentElement.remove();
   }
+  checkInterface();
 }
 
-function clearList() {
-  itemList.innerHTML = "";
+// All Clear List !
+function clearList(e) {
+  e.preventDefault();
+  addList.innerHTML = "";
+  // listAddRemove.style.display = "none";
 }
 
-function checkInterFace() {
-  const items = document.querySelectorAll(".item");
-
-  if (items === 0) {
-    console.log("Item Not Found !");
+// Check
+function checkInterface() {
+  let items = document.querySelectorAll(".item");
+  if (items.length === 0) {
+    listAddRemove.style.display = "none";
   } else {
-    console.log(items);
+    listAddRemove.style.display = "block";
   }
 }
-checkInterFace();
 
-// Event Listener !
-itemForm.addEventListener("submit", addItem);
-itemList.addEventListener("click", removeItem);
-cliearBtn.addEventListener("click", clearList);
+// Listener !
+clearBtn.addEventListener("click", clearList);
+searchForm.addEventListener("input", search);
+addList.addEventListener("click", removeItem);
+itemForm.addEventListener("submit", add);
